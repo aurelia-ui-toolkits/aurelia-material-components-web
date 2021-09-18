@@ -20,4 +20,11 @@
     <compose view="./pagination.html" class="demo-layout__row"></compose>
     <example-viewer html.bind="paginationHtml"></example-viewer>
   </div>
+
+  <div class="demo-content">
+    <h3 class="demo-content__headline">Sorting</h3>
+    <compose view="./sorting.html" class="demo-layout__row"></compose>
+    <p>Sorted event: ${columnSortedEvent | json }</p>
+    <example-viewer html.bind="sortingHtml"></example-viewer>
+  </div>
 </template>

@@ -1,6 +1,7 @@
 import standardHtml from '!!raw-loader!./standard.html';
 import selectionHtml from '!!raw-loader!./selection.html';
 import paginationHtml from '!!raw-loader!./pagination.html';
+import sortingHtml from '!!raw-loader!./sorting.html';
 import { autoinject } from 'aurelia-framework';
 import { MdcSnackbarService } from '@aurelia-mdc-web/snackbar';
 
@@ -10,6 +11,13 @@ export interface MDCDataTableRowSelectionChangedEvent {
   selected: boolean;
 }
 
+export interface MDCSortActionEventData {
+  columnIndex: number;
+  columnId: string | null;
+  sortValue: string;
+  headerCell: HTMLElement;
+}
+
 @autoinject
 export class Examples {
   constructor(private snackbarService: MdcSnackbarService) { }
@@ -17,6 +25,8 @@ export class Examples {
   standardHtml = standardHtml;
   selectionHtml = selectionHtml;
   paginationHtml = paginationHtml;
+  sortingHtml = sortingHtml;
+  pageSize = 10;
   activePage = 1;
   busy = false;
 
@@ -31,14 +41,13 @@ export class Examples {
     this.selectionChangedEvent = { rowId: event.rowId, rowIndex: event.rowIndex, selected: event.selected };
   }
 
+  columnSortedEvent: MDCSortActionEventData;
+  onColumnSorted(event: MDCSortActionEventData) {
+    this.columnSortedEvent = { columnId: event.columnId, columnIndex: event.columnIndex, headerCell: event.headerCell, sortValue: event.sortValue };
+  }
+
   handleNavigation(type: string) {
     this.snackbarService.open(`navigation type: ${type}`);
-    switch (type) {
-      case 'first': this.activePage = 1; break;
-      case 'prev': this.activePage--; break;
-      case 'next': this.activePage++; break;
-      case 'last': this.activePage = 4; break;
-    }
   }
 
 }

@@ -1,0 +1,68 @@
+<template>
+  <mdc-data-table mdcdatatable:sorted.delegate="onColumnSorted($event.detail)">
+    <table>
+      <thead>
+        <tr>
+          <th class="mdc-data-table__header-cell mdc-data-table__header-cell--with-sort"
+              aria-sort="none"
+              data-column-id="dessert">
+            <div class="mdc-data-table__header-cell-wrapper">
+              <div class="mdc-data-table__header-cell-label">
+                Dessert
+              </div>
+              <button class="mdc-icon-button material-icons mdc-data-table__sort-icon-button"
+                      aria-label="Sort by dessert" aria-describedby="dessert-status-label">
+                arrow_upward
+              </button>
+              <div class="mdc-data-table__sort-status-label" aria-hidden="true" id="dessert-status-label">
+              </div>
+            </div>
+          </th>
+          <th numeric
+              class="mdc-data-table__header-cell mdc-data-table__header-cell--with-sort"
+              aria-sort="ascending"
+              data-column-id="calories">
+            <div class="mdc-data-table__header-cell-wrapper">
+              <div class="mdc-data-table__header-cell-label">
+                Calories
+              </div>
+              <button class="mdc-icon-button material-icons mdc-data-table__sort-icon-button"
+                      aria-label="Sort by calories" aria-describedby="dessert-status-label">
+                arrow_upward
+              </button>
+              <div class="mdc-data-table__sort-status-label" aria-hidden="true" id="calories-status-label">
+              </div>
+            </div>
+          </th>
+          <th numeric>Carbs</th>
+          <th numeric
+              class="mdc-data-table__header-cell mdc-data-table__header-cell--with-sort"
+              aria-sort="none"
+              data-column-id="protein">
+            <div class="mdc-data-table__header-cell-wrapper">
+              <div class="mdc-data-table__header-cell-label">
+                Protein (g)
+              </div>
+              <button class="mdc-icon-button material-icons mdc-data-table__sort-icon-button"
+                      aria-label="Sort by protein (g)" aria-describedby="protein-status-label">
+                arrow_upward
+              </button>
+              <div class="mdc-data-table__sort-status-label" aria-hidden="true" id="protein-status-label">
+              </div>
+            </div>
+          </th>
+          <th mdcDataTableHeaderCell>Comments</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr mdc-data-table-row repeat.for="dessert of desserts">
+          <td>${dessert.name}</td>
+          <td numeric>${dessert.calories}</td>
+          <td numeric>${dessert.carbs}</td>
+          <td numeric>${dessert.protein}</td>
+          <td>${dessert.comment}</td>
+        </tr>
+      </tbody>
+    </table>
+  </mdc-data-table>
+</template>

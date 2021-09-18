@@ -1,6 +1,6 @@
 <template>
-  <mdc-data-table pagination page-sizes.bind="[10,20,30]" page-size.to-view="10" records-count="35"
-    active-page.bind="activePage" pagination-total="1-3 of 3"
+  <mdc-data-table pagination page-sizes.bind="[10,20,30]" page-size.bind="pageSize" records-count="35"
+    active-page.bind="activePage" pagination-total="1-3 of 3" preserve-active-page-with-events
     mdcdatatable:navigation.trigger="handleNavigation($event.detail.type)" pagination-position="between">
     <table>
       <thead>

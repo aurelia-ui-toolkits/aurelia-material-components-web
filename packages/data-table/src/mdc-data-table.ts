@@ -12,6 +12,7 @@ import { bindable } from 'aurelia-typed-observable-plugin';
 events.ROW_SELECTION_CHANGED = events.ROW_SELECTION_CHANGED.toLowerCase();
 events.SELECTED_ALL = events.SELECTED_ALL.toLowerCase();
 events.UNSELECTED_ALL = events.UNSELECTED_ALL.toLowerCase();
+events.SORTED = events.SORTED.toLowerCase();
 const NAVIGATION_EVENT = 'mdcdatatable:navigation';
 
 /**
@@ -72,7 +73,19 @@ export class MdcDataTable extends MdcComponent<MDCDataTableFoundation> implement
   /** Selected page size */
   @bindable({ defaultBindingMode: bindingMode.twoWay })
   pageSize: unknown = 10;
+  pageSizeChanged() {
+    if (this.preserveActivePageWithEvents) {
+      if (typeof this.pageSize !== 'number' || this.pageSize === undefined) {
+        throw new Error('MDCDataTable: Active page cannot be set while pageSize is unknown or undefined.');
+      }
 
+      const pagesCount = Math.ceil(this.recordsCount / this.pageSize);
+      if (this.activePage > pagesCount) {
+        this.activePage = pagesCount;
+      }
+    }
+  }
+  
   /** Makes header row sticky (fixed) on vertical scroll.
    * (Note: Sticky header feature is not compatible with IE11 browsers.) */
   @bindable.booleanAttr
@@ -93,8 +106,8 @@ export class MdcDataTable extends MdcComponent<MDCDataTableFoundation> implement
   @bindable.number
   recordsCount: number;
 
-  /** Sets the active page number. Used in navigation row. */
-  @bindable.number
+  /** Active page number. Used in navigation row. */
+  @bindable.number({ defaultBindingMode: bindingMode.twoWay })
   activePage: number;
 
   @computedFrom('pageSize', 'recordsCount', 'activePage')
@@ -102,6 +115,7 @@ export class MdcDataTable extends MdcComponent<MDCDataTableFoundation> implement
     if (typeof this.pageSize !== 'number' || this.pageSize === undefined || isNaN(this.activePage) || isNaN(this.recordsCount)) {
       return undefined;
     }
+
     const firstRecord = this.pageSize * (this.activePage - 1) + 1;
     const lastRecord = Math.min(this.pageSize * this.activePage, this.recordsCount);
     return `${firstRecord}-${lastRecord} of ${this.recordsCount}`;
@@ -121,6 +135,9 @@ export class MdcDataTable extends MdcComponent<MDCDataTableFoundation> implement
 
   @bindable.booleanAttr
   hoistPageSelectToBody: boolean;
+
+  @bindable.booleanAttr
+  preserveActivePageWithEvents: boolean;
 
   get rowCheckboxList(): MdcCheckbox[] {
     return Array.from(this.root.querySelectorAll<IMdcCheckboxElement>('tbody>tr .mdc-checkbox'))
@@ -147,6 +164,19 @@ export class MdcDataTable extends MdcComponent<MDCDataTableFoundation> implement
 
   handleNavigationClick(type: 'first' | 'prev' | 'next' | 'last') {
     this.emit(NAVIGATION_EVENT, { type }, true);
+
+    if (this.preserveActivePageWithEvents) {
+      if (typeof this.pageSize !== 'number' || this.pageSize === undefined) {
+        throw new Error('MDCDataTable: Active page cannot be set while pageSize is unknown or undefined.');
+      }
+
+      switch (type) {
+        case 'first': this.activePage = 1; break;
+        case 'prev': this.activePage--; break;
+        case 'next': this.activePage++; break;
+        case 'last': this.activePage = Math.ceil(this.recordsCount / this.pageSize); break;
+      }
+    }
   }
 
   /**
